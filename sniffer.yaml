@@ -37,7 +37,7 @@ spec:
     - name: tcpdump
       image: alpine:latest
       command: ["/bin/sh", "-c"]
-      args: ["apk update && apk add tcpdump && mkdir /captures && tcpdump -i cni0 -w "/nfs/pcap/capture-$(date +\%H\%M).pcap" -G 60"]
+      args: ["apk update && apk add tcpdump && mkdir /captures && tcpdump -i cni0 -w '/nfs/pcap/capture-$(date +\%H\%M).pcap' -G 60"]
       volumeMounts:
         - name: nfs-storage
           mountPath: /captures
