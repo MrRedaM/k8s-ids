@@ -8,7 +8,7 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    server: 192.168.56.4
+    server: 192.168.56.5
     path: /nfs
 
 ---
@@ -58,7 +58,7 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    server: 192.168.56.4
+    server: 192.168.56.5
     path: /nfs
 
 ---
