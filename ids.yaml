@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nfs-pv
+  name: nfs-pv-cicflowmeter
 spec:
   capacity:
     storage: 1Gi
@@ -16,7 +16,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nfs-pvc
+  name: nfs-pvc-cicflowmeter
 spec:
   accessModes:
     - ReadWriteMany
@@ -44,14 +44,14 @@ spec:
   volumes:
       - name: nfs-storage
         persistentVolumeClaim:
-          claimName: nfs-pvc
+          claimName: nfs-pvc-cicflowmeter
 
 ---
 
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nfs-pv-pcap
+  name: nfs-pv-tcpdump
 spec:
   capacity:
     storage: 1Gi
@@ -59,14 +59,14 @@ spec:
     - ReadWriteMany
   nfs:
     server: 192.168.56.4
-    path: /nfs/pcap
+    path: /nfs
 
 ---
 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: nfs-pvc-pcap
+  name: nfs-pvc-tcpdump
 spec:
   accessModes:
     - ReadWriteMany
@@ -90,10 +90,10 @@ spec:
       args: ["apk update && apk add tcpdump && tcpdump -i cni0 -w /captures/capture-%H%M.pcap -G 60"]
       volumeMounts:
         - name: nfs-storage
-          mountPath: /captures
+          mountPath: /nfs
       securityContext:
         privileged: true
   volumes:
     - name: nfs-storage
       persistentVolumeClaim:
-        claimName: nfs-pvc-pcap
+        claimName: nfs-pvc-tcpdump
