@@ -35,7 +35,7 @@ spec:
   hostNetwork: true
   containers:
     - name: cicflowmeter-container
-      image: redmors/cicflowmeter:1.1.4
+      image: redmors/cicflowmeter:latest
       volumeMounts:
         - name: nfs-storage
           mountPath: /nfs
