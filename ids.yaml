@@ -129,9 +129,9 @@ spec:
     spec:
       containers:
         - name: ml-ids
-          image: redmors/ml-ids-classifier:conda
+          image: redmors/ml-ids-classifier:1.0
           ports:
-            - containerPort: 5000
+            - containerPort: 8000
 
 ---
 
@@ -146,5 +146,6 @@ spec:
   type: NodePort
   ports:
     - protocol: TCP
-      port: 30500
-      targetPort: 5000
+      port: 8000
+      targetPort: 8000
+      nodePort: 30500
