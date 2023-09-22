@@ -1,4 +1,10 @@
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ids
+
+---
 
 apiVersion: v1
 kind: PersistentVolume
@@ -19,6 +25,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: nfs-pvc-cicflowmeter
+  namespace: ids
 spec:
   accessModes:
     - ReadWriteMany
@@ -33,6 +40,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: cicflowmeter
+  namespace: ids
 spec:
   hostNetwork: true
   containers:
@@ -69,6 +77,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: nfs-pvc-tcpdump
+  namespace: ids
 spec:
   accessModes:
     - ReadWriteMany
@@ -83,6 +92,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: tcpdump
+  namespace: ids
 spec:
   hostNetwork: true
   containers:
@@ -106,6 +116,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ml-ids
+  namespace: ids
 spec:
   replicas: 1
   selector:
@@ -128,6 +139,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: ml-ids
+  namespace: ids
 spec:
   selector:
     app: ml-ids
