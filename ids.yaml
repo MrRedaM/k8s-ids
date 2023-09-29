@@ -129,7 +129,7 @@ spec:
     spec:
       containers:
         - name: ml-ids
-          image: redmors/ml-ids-classifier:1.0.2
+          image: redmors/ml-ids-classifier:1.0.3
           ports:
             - containerPort: 8000
 
