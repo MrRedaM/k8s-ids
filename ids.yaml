@@ -15,12 +15,7 @@ spec:
   capacity:
     storage: 1Gi
   accessModes:
-    - ReadWriteMany---
-
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: ids
+    - ReadWriteMany
   nfs:
     server: 192.168.56.5
     path: /nfs
