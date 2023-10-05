@@ -195,13 +195,13 @@ metadata:
   namespace: app
 spec:
   selector:
-    app: nginx
+    app: app
+  type: NodePort
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
-  type: NodePort
-  nodePort: 30000
+      nodePort: 30000
 
 ---
 
