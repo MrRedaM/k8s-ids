@@ -195,7 +195,7 @@ metadata:
   namespace: app
 spec:
   selector:
-    app: app
+    app: nginx
   type: NodePort
   ports:
     - protocol: TCP
