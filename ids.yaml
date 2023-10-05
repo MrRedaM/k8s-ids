@@ -222,5 +222,5 @@ spec:
     spec:
       containers:
         - name: user-sim
-          image: redmors/user-sim:0.0.0
+          image: redmors/user-sim:0.0.1
           imagePullPolicy: Always
