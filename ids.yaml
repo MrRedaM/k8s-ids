@@ -117,6 +117,60 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
+  name: tcpdump
+  namespace: ids
+spec:
+  hostNetwork: true
+  containers:
+    - name: tcpdump
+      image: alpine:latest
+      command: ["/bin/sh", "-c"]
+      args: ["apk update && apk add tcpdump && tcpdump -i cni0 -w /nfs/pcap/capture-%Y-%m-%d_%H:%M:%S.pcap -G 15"]
+      volumeMounts:
+        - name: nfs-storage
+          mountPath: /nfs
+      securityContext:
+        privileged: true
+  volumes:
+    - name: nfs-storage
+      persistentVolumeClaim:
+        claimName: nfs-pvc-tcpdump
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv-sniffer
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 192.168.56.5
+    path: /nfs
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-pvc-sniffer
+  namespace: ids
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
   name: sniffer
   namespace: ids
 spec:
@@ -132,7 +186,7 @@ spec:
   volumes:
       - name: nfs-storage
         persistentVolumeClaim:
-          claimName: nfs-pvc-tcpdump
+          claimName: nfs-pvc-sniffer
 
 ---
 
