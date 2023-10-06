@@ -37,25 +37,50 @@ spec:
 
 ---
 
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: cicflowmeter
   namespace: ids
 spec:
-  hostNetwork: true
-  containers:
-    - name: cicflowmeter-container
-      image: redmors/cicflowmeter:1.2.9
-      volumeMounts:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cicflowmeter
+  template:
+    metadata:
+      labels:
+        app: cicflowmeter
+    spec:
+      containers:
+        - name: cicflowmeter
+          image: redmors/cicflowmeter:2.0.0
+          volumeMounts:
+          - name: nfs-storage
+            mountPath: /nfs
+          ports:
+            - containerPort: 8000
+      volumes:
         - name: nfs-storage
-          mountPath: /nfs
-      securityContext:
-        privileged: true
-  volumes:
-      - name: nfs-storage
-        persistentVolumeClaim:
-          claimName: nfs-pvc-cicflowmeter
+          persistentVolumeClaim:
+            claimName: nfs-pvc-cicflowmeter
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: cicflowmeter
+  namespace: ids
+spec:
+  selector:
+    app: cicflowmeter
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+      nodePort: 30200
 
 ---
 
@@ -92,24 +117,99 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: tcpdump
+  name: sniffer
   namespace: ids
 spec:
   hostNetwork: true
   containers:
-    - name: tcpdump
-      image: alpine:latest
-      command: ["/bin/sh", "-c"]
-      args: ["apk update && apk add tcpdump && tcpdump -i cni0 -w /nfs/pcap/capture-%Y-%m-%d_%H:%M:%S.pcap -G 15"]
+    - name: sniffer
+      image: redmors/k8s-sniffer:1.0.0
       volumeMounts:
         - name: nfs-storage
           mountPath: /nfs
       securityContext:
         privileged: true
   volumes:
-    - name: nfs-storage
-      persistentVolumeClaim:
-        claimName: nfs-pvc-tcpdump
+      - name: nfs-storage
+        persistentVolumeClaim:
+          claimName: nfs-pvc-tcpdump
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv-controller
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 192.168.56.5
+    path: /nfs
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-pvc-controller
+  namespace: ids
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller
+  namespace: ids
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: controller
+  template:
+    metadata:
+      labels:
+        app: controller
+    spec:
+      containers:
+        - name: ml-ids
+          image: redmors/k8s-ids-controller:1.0.0
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+          - name: nfs-storage
+            mountPath: /nfs
+      volumes:
+        - name: nfs-storage
+          persistentVolumeClaim:
+            claimName: nfs-pvc-controller
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: controller
+  namespace: ids
+spec:
+  selector:
+    app: controller
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30300
 
 ---
 
@@ -149,5 +249,5 @@ spec:
     - protocol: TCP
       port: 8080
       targetPort: 8080
-      nodePort: 30500
+      nodePort: 30400
 
