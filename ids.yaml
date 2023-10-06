@@ -177,7 +177,7 @@ spec:
   hostNetwork: true
   containers:
     - name: sniffer
-      image: redmors/k8s-sniffer:1.0.0
+      image: redmors/k8s-sniffer:1.1.0
       volumeMounts:
         - name: nfs-storage
           mountPath: /nfs
