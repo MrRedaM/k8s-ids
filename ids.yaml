@@ -54,7 +54,7 @@ spec:
     spec:
       containers:
         - name: cicflowmeter
-          image: redmors/cicflowmeter:2.0.0
+          image: redmors/cicflowmeter:2.0.8
           volumeMounts:
           - name: nfs-storage
             mountPath: /nfs
@@ -177,7 +177,7 @@ spec:
   hostNetwork: true
   containers:
     - name: sniffer
-      image: redmors/k8s-sniffer:1.1.0
+      image: redmors/k8s-sniffer:1.1.2
       volumeMounts:
         - name: nfs-storage
           mountPath: /nfs
@@ -198,6 +198,7 @@ spec:
   capacity:
     storage: 1Gi
   accessModes:
+
     - ReadWriteMany
   nfs:
     server: 192.168.56.5
@@ -237,7 +238,7 @@ spec:
     spec:
       containers:
         - name: ml-ids
-          image: redmors/k8s-ids-controller:1.0.0
+          image: redmors/k8s-ids-controller:1.0.3
           ports:
             - containerPort: 8000
           volumeMounts:
@@ -261,8 +262,8 @@ spec:
   type: NodePort
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 8000
+      targetPort: 8000
       nodePort: 30300
 
 ---
@@ -304,4 +305,3 @@ spec:
       port: 8080
       targetPort: 8080
       nodePort: 30400
-
