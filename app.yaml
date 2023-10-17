@@ -13,7 +13,6 @@ metadata:
   name: nginx-deployment
   namespace: app
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: nginx
