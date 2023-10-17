@@ -48,25 +48,3 @@ spec:
       port: 80
       targetPort: 80
       nodePort: 30000
-
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: user-sim
-  namespace: app
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: user-sim
-  template:
-    metadata:
-      labels:
-        app: user-sim
-    spec:
-      containers:
-        - name: user-sim
-          image: redmors/user-sim:0.0.1
-          imagePullPolicy: Always
